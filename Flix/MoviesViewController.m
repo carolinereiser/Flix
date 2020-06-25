@@ -25,6 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //set table view datasource and delegate to self
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
@@ -36,47 +37,48 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(fetchMovies) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
-    
-
 }
 
 - (void)fetchMovies {
     // Do any additional setup after loading the view.
     //show animation when movies are loading
    [self.activityIndicator startAnimating];
+    //request to Movies DB
    NSURL *url = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed"];
    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10.0];
    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
           //store what is returned in a movies array
-          if (error != nil) {
-              //show an alert when there is no network connection
+          if (error != nil) {   //no network connection
+              NSLog(@"%@", [error localizedDescription]);
+              //stop the activity indicator
               [self.activityIndicator stopAnimating];
+              
+              //show an alert when there is no network connection
               UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Cannot Get Movies" message: @"The Internet connection appears to be offline" preferredStyle:(UIAlertControllerStyleAlert)];
               
+              //when user clicks try again, load movies again
               UIAlertAction *tryAgainAction = [UIAlertAction actionWithTitle:@"Try Again" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action){
                     [self fetchMovies];
               }];
               
+              //add try again to the alert
               [alert addAction:tryAgainAction];
               
+              //display alert
               [self presentViewController: alert animated: YES completion: nil];
-              
-              NSLog(@"%@", [error localizedDescription]);
           }
-          else {
+          else {            //display the movies
               NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-              NSLog(@"%@", dataDictionary);
               
-              //get array of movies
+              //get array of movies from the API call
               self.movies = dataDictionary[@"results"];
-              for(NSDictionary *movie in self.movies)
-              {
-                  NSLog(@"%@", movie[@"title"]);
-              }
+              //show updated version in table
               [self.tableView reloadData];
           }
+       //stop refreshing (for when a user swiped down to refresh)
        [self.refreshControl endRefreshing];
+       //stop the activity indicator
        [self.activityIndicator stopAnimating];
     }];
    [task resume];
@@ -99,12 +101,13 @@
     cell.titleLabel.text = movie[@"title"];
     cell.summaryLabel.text = movie[@"overview"];
     
+    //get movie poster URL
     NSString *baseURLString = @"https://image.tmdb.org/t/p/w500";
     NSString *posterURLString = movie[@"poster_path"];
     NSString *fullPosterURLString = [baseURLString stringByAppendingString:posterURLString];
-    
     NSURL *posterURL = [NSURL URLWithString:fullPosterURLString];
     
+    //set poster image to nothing and then set to found URL
     cell.posterView.image = nil;
     [cell.posterView setImageWithURL:posterURL];
     
@@ -121,7 +124,6 @@
     UITableViewCell *tappedCell = sender;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell];
     NSDictionary *movie = self.movies[indexPath.row];
-    
     DetailsViewController *detailsViewController = [segue destinationViewController];
     detailsViewController.movie = movie;
 }

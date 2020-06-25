@@ -174,10 +174,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="yGI-ca-g5N">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="KNP-7R-EKd">
+                                <rect key="frame" x="145" y="418" width="120" height="106"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="yGI-ca-g5N">
+                                <rect key="frame" x="-7" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="xJv-hX-Du9">
                                     <size key="itemSize" width="199" height="258"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -210,6 +215,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="f8s-jO-OaS"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="KNP-7R-EKd" id="eRq-bh-bXt"/>
                         <outlet property="collectionView" destination="yGI-ca-g5N" id="J9e-86-WCS"/>
                     </connections>
                 </viewController>
