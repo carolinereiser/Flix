@@ -55,10 +55,7 @@
                   for(NSDictionary *movie in self.movies)
                   {
                       NSLog(@"%@", movie[@"title"]);
-                                         
                   }
-                  
-                  
                   [self.tableView reloadData];
               }
            [self.refreshControl endRefreshing];
@@ -88,6 +85,7 @@
     
     NSURL *posterURL = [NSURL URLWithString:fullPosterURLString];
     
+    cell.posterView.image = nil;
     [cell.posterView setImageWithURL:posterURL];
     
     return cell;
