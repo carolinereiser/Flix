@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSArray *movies;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -27,13 +28,19 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
+    
     //get the movies from the database
+    [self.activityIndicator startAnimating];
     [self fetchMovies];
+    [self.activityIndicator stopAnimating];
+
     
     //refresh when user swipes to top
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(fetchMovies) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
+    
+
 }
 
 - (void)fetchMovies {
@@ -61,6 +68,7 @@
            [self.refreshControl endRefreshing];
           }];
        [task resume];
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
