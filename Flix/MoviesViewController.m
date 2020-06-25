@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) NSArray *movies;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
 
@@ -25,31 +26,43 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
+    //get the movies from the database
+    [self fetchMovies];
+    
+    //refresh when user swipes to top
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(fetchMovies) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.refreshControl atIndex:0];
+}
+
+- (void)fetchMovies {
     // Do any additional setup after loading the view.
-    NSURL *url = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10.0];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-           //store what is returned in a movies array
-           if (error != nil) {
-               NSLog(@"%@", [error localizedDescription]);
-           }
-           else {
-               NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-               NSLog(@"%@", dataDictionary);
-               
-               //get array of movies
-               self.movies = dataDictionary[@"results"];
-               for(NSDictionary *movie in self.movies)
-               {
-                   NSLog(@"%@", movie[@"title"]);
-                                      
-               }
-               
-               [self.tableView reloadData];
-           }
-       }];
-    [task resume];
+       NSURL *url = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed"];
+       NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10.0];
+       NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+       NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+              //store what is returned in a movies array
+              if (error != nil) {
+                  NSLog(@"%@", [error localizedDescription]);
+              }
+              else {
+                  NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                  NSLog(@"%@", dataDictionary);
+                  
+                  //get array of movies
+                  self.movies = dataDictionary[@"results"];
+                  for(NSDictionary *movie in self.movies)
+                  {
+                      NSLog(@"%@", movie[@"title"]);
+                                         
+                  }
+                  
+                  
+                  [self.tableView reloadData];
+              }
+           [self.refreshControl endRefreshing];
+          }];
+       [task resume];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
