@@ -30,10 +30,7 @@
     
     
     //get the movies from the database
-    [self.activityIndicator startAnimating];
     [self fetchMovies];
-    [self.activityIndicator stopAnimating];
-
     
     //refresh when user swipes to top
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -45,30 +42,45 @@
 
 - (void)fetchMovies {
     // Do any additional setup after loading the view.
-       NSURL *url = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed"];
-       NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10.0];
-       NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-       NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-              //store what is returned in a movies array
-              if (error != nil) {
-                  NSLog(@"%@", [error localizedDescription]);
+    //show animation when movies are loading
+   [self.activityIndicator startAnimating];
+   NSURL *url = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed"];
+   NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10.0];
+   NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+   NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+          //store what is returned in a movies array
+          if (error != nil) {
+              //show an alert when there is no network connection
+              [self.activityIndicator stopAnimating];
+              UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Cannot Get Movies" message: @"The Internet connection appears to be offline" preferredStyle:(UIAlertControllerStyleAlert)];
+              
+              UIAlertAction *tryAgainAction = [UIAlertAction actionWithTitle:@"Try Again" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action){
+                    [self fetchMovies];
+              }];
+              
+              [alert addAction:tryAgainAction];
+              
+              [self presentViewController: alert animated: YES completion: nil];
+              
+              NSLog(@"%@", [error localizedDescription]);
+          }
+          else {
+              NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+              NSLog(@"%@", dataDictionary);
+              
+              //get array of movies
+              self.movies = dataDictionary[@"results"];
+              for(NSDictionary *movie in self.movies)
+              {
+                  NSLog(@"%@", movie[@"title"]);
               }
-              else {
-                  NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                  NSLog(@"%@", dataDictionary);
-                  
-                  //get array of movies
-                  self.movies = dataDictionary[@"results"];
-                  for(NSDictionary *movie in self.movies)
-                  {
-                      NSLog(@"%@", movie[@"title"]);
-                  }
-                  [self.tableView reloadData];
-              }
-           [self.refreshControl endRefreshing];
-          }];
-       [task resume];
-    
+              [self.tableView reloadData];
+          }
+       [self.refreshControl endRefreshing];
+       [self.activityIndicator stopAnimating];
+    }];
+   [task resume];
+   //stop animation when movies are done loading
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
