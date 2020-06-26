@@ -11,12 +11,16 @@
 #import "DetailsViewController.h"
 #import "UIImageView+AFNetworking.h"
 
-@interface MoviesViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface MoviesViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) NSArray *movies;
+@property (strong, nonatomic) NSArray *filteredMovies;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
+
 
 @end
 
@@ -28,8 +32,12 @@
     //set table view datasource and delegate to self
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    self.searchBar.delegate = self;
     
-    
+    //dismiss the keyboard when a user clicks outside of the keyboard
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
+    [self.view addGestureRecognizer:tap];
+        
     //get the movies from the database
     [self fetchMovies];
     
@@ -40,7 +48,7 @@
 }
 
 - (void)fetchMovies {
-    // Do any additional setup after loading the view.
+    // Do any additional setup after loading the view.cvlivckvggilengidncrkffhbvlruuet
     //show animation when movies are loading
    [self.activityIndicator startAnimating];
     //request to Movies DB
@@ -73,6 +81,8 @@
               
               //get array of movies from the API call
               self.movies = dataDictionary[@"results"];
+              self.filteredMovies = [self.movies arrayByAddingObjectsFromArray:self.filteredMovies];
+              
               //show updated version in table
               [self.tableView reloadData];
           }
@@ -85,18 +95,24 @@
    //stop animation when movies are done loading
 }
 
+- (void)dismissKeyboard
+{
+    [self.searchBar resignFirstResponder];
+}
+
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.movies.count;
+    return self.filteredMovies.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //to get the moviecells
-    MovieCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"MovieCell"];
+    MovieCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"MovieCell" forIndexPath:indexPath];
     
     //get the movies from the query
-    NSDictionary *movie = self.movies[indexPath.row];
+    NSDictionary *movie = self.filteredMovies[indexPath.row];
     
     cell.titleLabel.text = movie[@"title"];
     cell.summaryLabel.text = movie[@"overview"];
@@ -114,6 +130,29 @@
     return cell;
 }
 
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    if (searchText.length != 0) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title contains [cd] %@", searchText];
+        
+        self.filteredMovies = [self.movies filteredArrayUsingPredicate:predicate];
+        
+        NSLog(@"%@", self.filteredMovies);
+        
+    }
+    else {
+        self.filteredMovies = self.movies;
+    }
+    
+    [self.tableView reloadData];
+}
+
+//dismiss the keyboard when a user presses search
+- (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
 
 #pragma mark - Navigation
 
