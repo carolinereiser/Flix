@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TrailerViewController : UIViewController
-@property (nonatomic, strong) NSDictionary *movie;
+@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *movie;
 @end
 
 NS_ASSUME_NONNULL_END

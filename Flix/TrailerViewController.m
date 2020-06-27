@@ -38,10 +38,9 @@
         {
             self.dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             self.videoKey = self.dataDictionary[@"results"][0][@"key"];
-            NSLog(@"KEY: %@", self.videoKey);
+
             //append video key to youtube link
             NSString *tempVideoString = [NSString stringWithFormat:@"https://www.youtube.com/watch?v=%@", self.videoKey];
-            NSLog (@"%@", tempVideoString);
             NSURL *videoURL = [NSURL URLWithString:tempVideoString];
             
             //redirect to youtube
