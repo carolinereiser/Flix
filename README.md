@@ -38,7 +38,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/2s1BLen" data-context="false" ><a href="//imgur.com/a/2s1BLen"></a></blockquote>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/2s1BLen" data-context="false" ><a href="//imgur.com/a/2s1BLen">Video Walkthrough</a></blockquote>
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
