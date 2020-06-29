@@ -13,21 +13,20 @@
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="launch_image" translatesAutoresizingMaskIntoConstraints="NO" id="kkZ-fG-IGH">
-                                <rect key="frame" x="124" y="348" width="166" height="152"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="launch_image" translatesAutoresizingMaskIntoConstraints="NO" id="kkZ-fG-IGH">
+                                <rect key="frame" x="124" y="317" width="166" height="262"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Flix" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uGt-wn-L44">
-                                <rect key="frame" x="178" y="508" width="59" height="55"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="46"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="kkZ-fG-IGH" secondAttribute="trailing" constant="124" id="Ozw-66-p1i"/>
+                            <constraint firstItem="kkZ-fG-IGH" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="WUx-Qg-92i"/>
+                            <constraint firstItem="kkZ-fG-IGH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="124" id="k9U-2I-6Uv"/>
+                            <constraint firstItem="kkZ-fG-IGH" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="273" id="tWo-GC-gjz"/>
+                            <constraint firstItem="kkZ-fG-IGH" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="zlz-G3-LgD"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
